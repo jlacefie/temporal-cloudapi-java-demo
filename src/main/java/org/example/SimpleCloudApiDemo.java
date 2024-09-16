@@ -34,16 +34,10 @@ public class SimpleCloudApiDemo {
         // Namespace created if it doesn't exist
         nsClient.createAPIKeyNamespace(nsName, namespace);
 
-         //TODO 
-        // createmTLSNamespace
-        // Namespace Cert Rotation
-
         idClient.printUsers();
         idClient.printServiceAccounts(); 
 
         // create a namespace admin for our new namespace
         idClient.createUser("testuserJL999@gmail.com", Map.of(namespace, "admin"), "developer");
-       
-        // TODO add polloin for create user
     }
 }
