@@ -3,6 +3,8 @@
  */
 package org.example;
 
+import java.util.Map;
+
 import io.temporal.client.CloudOperationsClient;
 import io.temporal.serviceclient.CloudServiceStubs;
 import io.temporal.serviceclient.CloudServiceStubsOptions;
@@ -26,11 +28,19 @@ public class SimpleCloudApiDemo {
 
         // Create a Namespace Client using the CloudOpsClient and Namespace information specified above
         SimpleCloudApiNamespaceClient nsClient = new SimpleCloudApiNamespaceClient(client);
-        nsClient.listNamespaces();
+        SimpleCloudApiIdentityClient idClient = new SimpleCloudApiIdentityClient(client);
+
+        nsClient.printNamespaces();
+        // Namespace created if it doesn't exist
         nsClient.createAPIKeyNamespace(nsName, namespace);
+
+        idClient.printUsers();
+        idClient.printServiceAccounts(); 
+
+        // create a namespace admin for our new namespace
+        idClient.createUser("testuserJL999@gmail.com", Map.of(namespace, "admin"), "developer");
         //TODO 
         // createmTLSNamespace
         // Namespace Cert Rotation
-        // List Users
     }
 }

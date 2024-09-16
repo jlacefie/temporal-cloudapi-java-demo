@@ -18,7 +18,7 @@ public final class SimpleCloudApiNamespaceClient {
         this.client = client;
     }
 
-    public void listNamespaces() {
+    public void printNamespaces() {
         // List all Namespaces
         GetNamespacesResponse namespacesResp =
             client
