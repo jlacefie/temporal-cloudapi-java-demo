@@ -22,6 +22,7 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -244,17 +245,20 @@ public final class SimpleCloudApiNamespaceClient {
 
         // Output the certificate in PEM format
         StringWriter stringWriter = new StringWriter();
-        PemWriter pemWriter = new PemWriter(stringWriter);
-        pemWriter.writeObject(new PemObject("CERTIFICATE", certificate.getEncoded()));
-        pemWriter.flush();
-        pemWriter.close();
+        
+         try (JcaPEMWriter pemWriter = new JcaPEMWriter(stringWriter)) {
+            pemWriter.writeObject(certificate);
+        }
 
-        // convert to a string so we can use it in the mTLS spec
+        // convert to a string so we can encode it as base64
         String pemCert = stringWriter.toString();
-        System.out.println("CA Certificate: ");
-        System.out.println(pemCert);
 
-        return pemCert;
+        // Encode the PEM certificate string in Base64
+        String base64PemCert = Base64.getEncoder().encodeToString(pemCert.getBytes());
+        System.out.println("Base64-encoded PEM Certificate: ");
+        System.out.println(base64PemCert);
+
+        return base64PemCert;
     }
     
 }
