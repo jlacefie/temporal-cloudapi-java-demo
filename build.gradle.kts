@@ -22,6 +22,10 @@ dependencies {
     // Add dependencies for Temporal SDK and dotenv
     implementation("io.temporal:temporal-sdk:1.25.1")
     implementation("io.github.cdimascio:java-dotenv:5.2.2")
+
+    // Add dependencies for 509c3 cert generation for the mTLS Auth example
+    implementation("org.bouncycastle:bcprov-jdk18on:1.76")
+    implementation("org.bouncycastle:bcpkix-jdk18on:1.76")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

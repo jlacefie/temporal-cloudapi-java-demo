@@ -15,6 +15,8 @@ public class SimpleCloudApiDemo {
     private static String apiVersion = System.getenv("TEMPORAL_CLIENT_CLOUD_API_VERSION");
     private static String nsName = "testns";
     private static String namespace = "testns.ksfop";
+    private static String nsNameMTLS = "testnsmtls";
+    private static String namespaceMTLS = "testnsmtls.ksfop";
 
     public static void main(String[] args) {
 
@@ -30,14 +32,17 @@ public class SimpleCloudApiDemo {
         SimpleCloudApiNamespaceClient nsClient = new SimpleCloudApiNamespaceClient(client);
         SimpleCloudApiIdentityClient idClient = new SimpleCloudApiIdentityClient(client);
 
-        nsClient.printNamespaces();
-        // Namespace created if it doesn't exist
-        nsClient.createAPIKeyNamespace(nsName, namespace);
+        //nsClient.printNamespaces();
 
-        idClient.printUsers();
-        idClient.printServiceAccounts(); 
+        // Namespace creation is not idempotent, so this will check to see if the namespace exists and create it if it doesn't
+        //nsClient.createAPIKeyNamespace(nsName, namespace);
+        nsClient.createMTLSNamespace(nsNameMTLS, namespaceMTLS);
+
+        //idClient.printUsers();
+        //idClient.printServiceAccounts(); 
 
         // create a namespace admin for our new namespace
-        idClient.createUser("testuserJL999@gmail.com", Map.of(namespace, "admin"), "developer");
+        // user creation is idempotent, so this will only create the user if it doesn't already exist
+        //idClient.createUser("testuserJL999@gmail.com", Map.of(namespace, "admin"), "developer");
     }
 }
