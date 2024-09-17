@@ -200,7 +200,6 @@ public final class SimpleCloudApiNamespaceClient {
         }
     }
 
-
     public String createCACertAsString() throws Exception {
         // Add BouncyCastle as a Security Provider
         Security.addProvider(new BouncyCastleProvider());
