@@ -104,48 +104,7 @@ public final class SimpleCloudApiNamespaceClient {
                 .createNamespace(CreateNamespaceRequest.newBuilder().setSpec(namespaceSpec).build());
             
             // We will now poll the Namespace to check if it has been created
-            System.out.println("Polling for Namespace creation...");
-            boolean namespaceCreated = false;
-            while (!namespaceCreated) {
-                try {
-                    // Sleep for a while before polling again
-                    Thread.sleep(5000); // 5 seconds
-        
-                    // Check the namespace status
-                    GetNamespaceResponse namespaceResp = client
-                        .getCloudServiceStubs()
-                        .blockingStub()
-                        .getNamespace(GetNamespaceRequest.newBuilder().setNamespace(namespace).build());
-        
-                    Namespace ns = namespaceResp.getNamespace();
-                        
-                    // Check if the namespace is created    
-                    if(ns.getState().equals("active")) {
-                        logger.info("Namespace created successfully" + namespace);
-                        // Set this to true to break the loop    
-                        namespaceCreated = true; 
-                    }
-
-                    // Print the namespace status
-                    logger.info("Namespace: " + namespace + " is in State: " + ns.getState());
-                    
-                } catch (io.grpc.StatusRuntimeException sre) {
-                    if (sre.getStatus().getCode() == io.grpc.Status.Code.NOT_FOUND) {
-                        // Namespace not found, continue polling
-                        logger.info("Namespace not found, continuing to poll...");
-                    } else {
-                        // Handle other exceptions
-                        logger.error("Error: " + sre.getStatus().getDescription());
-                        sre.printStackTrace();
-                        break;
-                    }
-                } catch (InterruptedException ie) {
-                    // Handle interrupted exception
-                    logger.error("Polling interrupted: " + ie.getMessage());
-                    ie.printStackTrace();
-                    break;
-                }
-            }  
+            pollNamespaceCreateStatus(client, namespace);
         }
     }
 
@@ -190,7 +149,8 @@ public final class SimpleCloudApiNamespaceClient {
                     .blockingStub()
                     .createNamespace(CreateNamespaceRequest.newBuilder().setSpec(namespaceSpec).build());
 
-                logger.info("Namespace created successfully: " + namespace);
+                // We will now poll the Namespace to check if it has been created
+                pollNamespaceCreateStatus(client, namespace);
 
             } catch (Exception cae) {
                 logger.error("Error creating CA Cert: " + cae.getMessage());
@@ -252,6 +212,55 @@ public final class SimpleCloudApiNamespaceClient {
             logger.error("Error updating CA Cert: " + cae.getMessage());
             cae.printStackTrace();
         }
+    }
+
+    // helper method to poll for the namespace
+    private void pollNamespaceCreateStatus (CloudOperationsClient client, String namespace) {
+        // We will now poll the Namespace to check if it has been created
+        System.out.println("Polling for Namespace creation...");
+        boolean namespaceCreated = false;
+
+        while (!namespaceCreated) {
+            try {
+                // Sleep for a while before polling again
+                Thread.sleep(5000); // 5 seconds
+
+                // Check the namespace status
+                GetNamespaceResponse namespaceResp = client
+                    .getCloudServiceStubs()
+                    .blockingStub()
+                    .getNamespace(GetNamespaceRequest.newBuilder().setNamespace(namespace).build());
+
+                Namespace ns = namespaceResp.getNamespace();
+                    
+                // Check if the namespace is created    
+                if(ns.getState().equals("active")) {
+                    logger.info("Namespace created successfully" + namespace);
+                    // Set this to true to break the loop    
+                    namespaceCreated = true; 
+                }
+
+                // Print the namespace status
+                logger.info("Namespace: " + namespace + " is in State: " + ns.getState());
+                
+            } catch (io.grpc.StatusRuntimeException sre) {
+                if (sre.getStatus().getCode() == io.grpc.Status.Code.NOT_FOUND) {
+                    // Namespace not found, continue polling
+                    logger.info("Namespace not found, continuing to poll...");
+                } else {
+                    // Handle other exceptions
+                    logger.error("Error: " + sre.getStatus().getDescription());
+                    sre.printStackTrace();
+                    break;
+                }
+            } catch (InterruptedException ie) {
+                // Handle interrupted exception
+                logger.error("Polling interrupted: " + ie.getMessage());
+                ie.printStackTrace();
+                break;
+            }
+        }  
+
     }
 
     // helper method to generate a new CA String

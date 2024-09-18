@@ -18,10 +18,10 @@ public class SimpleCloudApiDemo {
     
     private static String apiKey = System.getenv("TEMPORAL_CLIENT_CLOUD_API_KEY");
     private static String apiVersion = System.getenv("TEMPORAL_CLIENT_CLOUD_API_VERSION");
-    private static String nsName = "testns";
-    private static String namespace = "testns.ksfop";
-    private static String nsNameMTLS = "testnsmtls";
-    private static String namespaceMTLS = "testnsmtls.ksfop";
+    private static String nsName = "testns4";
+    private static String namespace = "testns4.ksfop";
+    private static String nsNameMTLS = "testnsmtls4";
+    private static String namespaceMTLS = "testnsmtls4.ksfop";
     private static String user = "testuserJL999@gmail.com";
 
     public static void main(String[] args) {
