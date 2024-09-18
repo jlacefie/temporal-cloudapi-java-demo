@@ -62,6 +62,7 @@ java -jar target/SimpleCloudApiDemo.jar rotateNamespaceMTLSCert
 java -jar target/SimpleCloudApiDemo.jar printUsers
 java -jar target/SimpleCloudApiDemo.jar printServiceAccounts
 java -jar target/SimpleCloudApiDemo.jar createUser
+```
 
 ## Configuration
 
