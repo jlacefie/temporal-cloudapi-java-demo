@@ -26,6 +26,10 @@ dependencies {
     // Add dependencies for 509c3 cert generation for the mTLS Auth example
     implementation("org.bouncycastle:bcprov-jdk18on:1.76")
     implementation("org.bouncycastle:bcpkix-jdk18on:1.76")
+
+    // Add SLF4J and Logback dependencies
+    implementation("org.slf4j:slf4j-api:1.7.32")
+    implementation("ch.qos.logback:logback-classic:1.2.6")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

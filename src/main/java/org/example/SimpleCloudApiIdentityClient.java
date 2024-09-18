@@ -2,29 +2,25 @@ package org.example;
 
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import io.temporal.api.cloud.cloudservice.v1.CreateUserRequest;
-import io.temporal.api.cloud.cloudservice.v1.GetNamespaceRequest;
-import io.temporal.api.cloud.cloudservice.v1.GetNamespaceResponse;
 import io.temporal.api.cloud.cloudservice.v1.GetServiceAccountsRequest;
 import io.temporal.api.cloud.cloudservice.v1.GetServiceAccountsResponse;
 import io.temporal.api.cloud.cloudservice.v1.GetUsersRequest;
 import io.temporal.api.cloud.cloudservice.v1.GetUsersResponse;
-import io.temporal.api.cloud.cloudservice.v1.SetUserGroupNamespaceAccessRequest;
-import io.temporal.api.cloud.cloudservice.v1.SetUserNamespaceAccessRequest;
 import io.temporal.api.cloud.identity.v1.Access;
 import io.temporal.api.cloud.identity.v1.AccountAccess;
 import io.temporal.api.cloud.identity.v1.NamespaceAccess;
 import io.temporal.api.cloud.identity.v1.UserSpec;
-import io.temporal.api.cloud.namespace.v1.Namespace;
-import io.temporal.api.cloud.namespace.v1.NamespaceSpec;
-import io.temporal.api.cloud.cloudservice.v1.CreateUserRequest;
 import io.temporal.api.cloud.cloudservice.v1.CreateUserResponse;
 import io.temporal.client.CloudOperationsClient;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public final class SimpleCloudApiIdentityClient {
 
+    private static final Logger logger = LoggerFactory.getLogger(SimpleCloudApiIdentityClient.class);
     private CloudOperationsClient client;
 
     public SimpleCloudApiIdentityClient (CloudOperationsClient client) {
@@ -32,6 +28,7 @@ public final class SimpleCloudApiIdentityClient {
     }
 
     public void printUsers() {
+        logger.info("Starting to print a list of users");
         // List all Users
         GetUsersResponse usersResp =
             client
@@ -40,11 +37,12 @@ public final class SimpleCloudApiIdentityClient {
                 .getUsers(GetUsersRequest.newBuilder().build());
 
         // Print the response
-        System.out.println("List Users");
-        System.out.println(usersResp);
+        logger.info("List Users");
+        logger.info(usersResp.toString());
     }
 
     public void printServiceAccounts() {
+        logger.info("Starting to print a list of Service Accounts");
         // List all ServiceAccounts
         GetServiceAccountsResponse sasResp =
             client
@@ -88,6 +86,6 @@ public final class SimpleCloudApiIdentityClient {
             .createUser(CreateUserRequest.newBuilder().setSpec(userSpec).build());
 
     // TODO: add polling for response
-    System.out.printf("User %s being created%n", createUserResponse);
+    logger.info("User being created + ", createUserResponse.toString());
     }
 }
