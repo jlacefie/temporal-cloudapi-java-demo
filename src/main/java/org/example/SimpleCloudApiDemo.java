@@ -25,8 +25,10 @@ public class SimpleCloudApiDemo {
 
     public static void main(String[] args) {
 
-        logger.info(apiKey);
-
+        // This is a non thread safe app that exercises the Temporal Cloud API. 
+        // The intent of this demo app is to show how to use the Temporal Cloud API to create namespaces, users, and service accounts.
+        // This is not a real application and should not be used in production.
+        
         logger.info("starting SimpleCloudApiDemo");
         logger.info("creating a client connection using the experimental CloudOpsClient in the Java SDK");
         // create a client connection using the experimental CloudOpsClient in the Java SDK
@@ -43,18 +45,19 @@ public class SimpleCloudApiDemo {
         logger.info("create a demo identity client which encapsulates identiy demo methods");
         SimpleCloudApiIdentityClient idClient = new SimpleCloudApiIdentityClient(client);
 
-        // nsClient.printNamespaces();
-
+        // Namespace examples
+        nsClient.printNamespaces();
         // Namespace creation is not idempotent, so this will check to see if the namespace exists and create it if it doesn't
-        //  nsClient.createAPIKeyNamespace(nsName, namespace);
-        // nsClient.createMTLSNamespace(nsNameMTLS, namespaceMTLS);
+        nsClient.createAPIKeyNamespace(nsName, namespace);
+        nsClient.createMTLSNamespace(nsNameMTLS, namespaceMTLS);
         nsClient.rotateNamespaceMTLSCert(nsNameMTLS, namespaceMTLS);
 
-        //  idClient.printUsers();
-        // idClient.printServiceAccounts(); 
+        // identity examples
+        idClient.printUsers();
+        idClient.printServiceAccounts(); 
 
         // create a namespace admin for our new namespace
         // user creation is idempotent, so this will only create the user if it doesn't already exist
-        // idClient.createUser("testuserJL999@gmail.com", Map.of(namespace, "admin"), "developer");
+        idClient.createUser("testuserJL999@gmail.com", Map.of(namespace, "admin"), "developer");
     }
 }
