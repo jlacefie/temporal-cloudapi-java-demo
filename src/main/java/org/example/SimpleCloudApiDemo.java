@@ -22,13 +22,14 @@ public class SimpleCloudApiDemo {
     private static String namespace = "testns.ksfop";
     private static String nsNameMTLS = "testnsmtls";
     private static String namespaceMTLS = "testnsmtls.ksfop";
+    private static String user = "testuserJL999@gmail.com";
 
     public static void main(String[] args) {
 
         // This is a non thread safe app that exercises the Temporal Cloud API. 
         // The intent of this demo app is to show how to use the Temporal Cloud API to create namespaces, users, and service accounts.
         // This is not a real application and should not be used in production.
-        
+
         logger.info("starting SimpleCloudApiDemo");
         logger.info("creating a client connection using the experimental CloudOpsClient in the Java SDK");
         // create a client connection using the experimental CloudOpsClient in the Java SDK
@@ -39,25 +40,49 @@ public class SimpleCloudApiDemo {
                     .setVersion(apiVersion)
                     .build()));
 
-        // Create a Namespace Client using the CloudOpsClient and Namespace information specified above
+        // create a demo namespace client which encapsulates namespace demo methods
         logger.info("create a demo namespace client which encapsulates namespace demo methods");
-        SimpleCloudApiNamespaceClient nsClient = new SimpleCloudApiNamespaceClient(client);
+        SimpleCloudApiNamespaceClient nsClient = new SimpleCloudApiNamespaceClient();
+        // create a demo identity client which encapsulates identity demo methods;
         logger.info("create a demo identity client which encapsulates identiy demo methods");
-        SimpleCloudApiIdentityClient idClient = new SimpleCloudApiIdentityClient(client);
+        SimpleCloudApiIdentityClient idClient = new SimpleCloudApiIdentityClient();
 
-        // Namespace examples
-        nsClient.printNamespaces();
-        // Namespace creation is not idempotent, so this will check to see if the namespace exists and create it if it doesn't
-        nsClient.createAPIKeyNamespace(nsName, namespace);
-        nsClient.createMTLSNamespace(nsNameMTLS, namespaceMTLS);
-        nsClient.rotateNamespaceMTLSCert(nsNameMTLS, namespaceMTLS);
+        // Parse command-line arguments
+        if (args.length == 0) {
+            logger.error("No arguments provided. Please specify which examples to run.");
+            return;
+        }
 
-        // identity examples
-        idClient.printUsers();
-        idClient.printServiceAccounts(); 
-
-        // create a namespace admin for our new namespace
-        // user creation is idempotent, so this will only create the user if it doesn't already exist
-        idClient.createUser("testuserJL999@gmail.com", Map.of(namespace, "admin"), "developer");
+        for (String arg : args) {
+            switch (arg) {
+                case "printNamespaces":
+                    nsClient.printNamespaces(client);
+                    break;
+                case "createAPIKeyNamespace":
+                    // namespace ceration is not idempotent, so we need to check if the namespace already exists
+                    nsClient.createAPIKeyNamespace(client, nsName, namespace);
+                    break;
+                case "createMTLSNamespace":
+                    // namespace ceration is not idempotent, so we need to check if the namespace already exists
+                    nsClient.createMTLSNamespace(client, nsNameMTLS, namespaceMTLS);
+                    break;
+                case "rotateNamespaceMTLSCert":
+                    nsClient.rotateNamespaceMTLSCert(client, nsNameMTLS, namespaceMTLS);
+                    break;
+                case "printUsers":
+                    idClient.printUsers(client);
+                    break;
+                case "printServiceAccounts":
+                    idClient.printServiceAccounts(client);
+                    break;
+                case "createUser":
+                    // user creation is idempotent based on the email address
+                    idClient.createUser(client, user, Map.of(namespace, "admin"), "developer");
+                    break;
+                default:
+                    logger.error("Unknown argument: " + arg);
+                    break;
+            }
+        }
     }
 }

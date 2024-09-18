@@ -39,19 +39,13 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Random;
 import java.util.Base64;
-import java.util.UUID;
 
 public final class SimpleCloudApiNamespaceClient {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleCloudApiNamespaceClient.class);
-    private CloudOperationsClient client;
+  
 
-    public SimpleCloudApiNamespaceClient (CloudOperationsClient client) {
-        logger.info("SimpleCloudApiNamespaceClient constructor called with client: " + client);
-        this.client = client;
-    }
-
-    public void printNamespaces() {
+    public void printNamespaces(CloudOperationsClient client) {
         logger.info("Start - print a list of namespces");
 
         // List all Namespaces
@@ -66,7 +60,7 @@ public final class SimpleCloudApiNamespaceClient {
         logger.info(namespacesResp.toString());
     }
 
-    public void createAPIKeyNamespace(String nsName, String namespace) {
+    public void createAPIKeyNamespace(CloudOperationsClient client, String nsName, String namespace) {
         // Create a Namespace Example
         // This is an example of an API Key Auth based Namespace
         // We will fist check to ensure the Namespace does not exist using a GetNamespace Request and Response
@@ -155,7 +149,7 @@ public final class SimpleCloudApiNamespaceClient {
         }
     }
 
-    public void createMTLSNamespace(String nsName, String namespace) {
+    public void createMTLSNamespace(CloudOperationsClient client, String nsName, String namespace) {
         logger.info("Starting the attempt to create the MTLS Namespace: " + namespace);
 
         try {GetNamespaceResponse namespaceResp =
@@ -205,7 +199,7 @@ public final class SimpleCloudApiNamespaceClient {
         }
     }
 
-    public void rotateNamespaceMTLSCert(String nsName, String namespace) {
+    public void rotateNamespaceMTLSCert(CloudOperationsClient client, String nsName, String namespace) {
         logger.info("Starting the attempt to rotate the MTLS cert on Namespace: " + namespace);
 
         try {

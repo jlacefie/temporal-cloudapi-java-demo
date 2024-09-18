@@ -21,13 +21,8 @@ import org.slf4j.LoggerFactory;
 public final class SimpleCloudApiIdentityClient {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleCloudApiIdentityClient.class);
-    private CloudOperationsClient client;
 
-    public SimpleCloudApiIdentityClient (CloudOperationsClient client) {
-        this.client = client;
-    }
-
-    public void printUsers() {
+    public void printUsers(CloudOperationsClient client) {
         logger.info("Starting to print a list of users");
         // List all Users
         GetUsersResponse usersResp =
@@ -41,7 +36,7 @@ public final class SimpleCloudApiIdentityClient {
         logger.info(usersResp.toString());
     }
 
-    public void printServiceAccounts() {
+    public void printServiceAccounts(CloudOperationsClient client) {
         logger.info("Starting to print a list of Service Accounts");
         // List all ServiceAccounts
         GetServiceAccountsResponse sasResp =
@@ -55,7 +50,7 @@ public final class SimpleCloudApiIdentityClient {
         System.out.println(sasResp);
     }
 
-    public void createUser(String user, Map<String, String> nsStrPermissions, String accountRole) {
+    public void createUser(CloudOperationsClient client, String user, Map<String, String> nsStrPermissions, String accountRole) {
     // To create a user, you need to
     // 1. Create an Access object to specify a user's account role and namespace permissions
     // 2. Create a UserSpec object to specify the user's email and access
