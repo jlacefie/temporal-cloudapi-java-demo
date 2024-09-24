@@ -15,18 +15,24 @@ import io.temporal.serviceclient.CloudServiceStubsOptions;
 public class SimpleCloudApiDemo {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleCloudApiDemo.class);
-    
-    private static String apiKey = System.getenv("TEMPORAL_CLIENT_CLOUD_API_KEY");
-    private static String apiVersion = System.getenv("TEMPORAL_CLIENT_CLOUD_API_VERSION");
-    private static String nsName = "testns4";
-    private static String namespace = "testns4.ksfop";
-    private static String nsNameMTLS = "testnsmtls4";
-    private static String namespaceMTLS = "testnsmtls4.ksfop";
-    private static String user = "testuserJL999@gmail.com";
 
     public static void main(String[] args) {
 
-        // This is a non thread safe app that exercises the Temporal Cloud API. 
+        String apiKey = System.getenv("TEMPORAL_CLIENT_CLOUD_API_KEY");
+        String apiVersion = System.getenv("TEMPORAL_CLIENT_CLOUD_API_VERSION");
+        String nsName = "testns4";
+        String namespace = "testns4.ksfop";
+        String nsNameMTLS = "testnsmtls4";
+        String namespaceMTLS = "testnsmtls4.ksfop";
+        String user = "testuserJL999@gmail.com";
+        // String oId = "ff0b60a8e63c4f1abe1244f9f01c89d4"; // this is a UX defect being addressed
+        String oId = "37dc003a3afb46b1b30812b5335fbbca"; // SA id
+        String apiKeyName = "testapikey42";
+        String uType = "service-account";
+        String dName = "new api created key";
+        String svcAcct = "TestSA";
+
+        // This is a simple demo app that exercises the Temporal Cloud API. 
         // The intent of this demo app is to show how to use the Temporal Cloud API to create namespaces, users, and service accounts.
         // This is not a real application and should not be used in production.
 
@@ -78,6 +84,12 @@ public class SimpleCloudApiDemo {
                 case "createUser":
                     // user creation is idempotent based on the email address
                     idClient.createUser(client, user, Map.of(namespace, "admin"), "developer");
+                    break;
+                case "createServiceAccount":
+                    idClient.createServiceAccount(client, svcAcct, Map.of(namespace, "admin"), "developer");
+                    break;
+                case "createAPIKey":
+                    idClient.createAPIKey(client, apiKeyName, oId, uType, dName);
                     break;
                 default:
                     logger.error("Unknown argument: " + arg);
